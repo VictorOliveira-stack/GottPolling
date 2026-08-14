@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidor 1</title>
+</head>
+<body>
+    <h1>Olá webserver</h1>
+
+    <form action="/postar" method="post" style="display: flex; flex-direction: column; width: 20em;">
+
+        <span>Titulo</span>
+        <input type="text" name="titulo" id="titulo" placeholder="insira o titulo" required>
+        <span>Sua Postagem</span>
+        <textarea name="texto" id="texto" placeholder="insira sua postagem" cols="30" rows="10"></textarea>
+        <span>Nome do Autor</span>
+        <input type="text" name="autor" id="autor" placeholder="nome do autor" required>
+
+        <button type="submit">Postar</button>
+
+    </form>
+
+
+    <h2>Registros do servidorweb  </h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titulo</th>
+                <th>Texto</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {{range .RegistroServidorweb}}
+            <tr>
+
+            <td>{{.ID}}</td>
+            <td>{{.Titulo}}</td>
+            <td>{{.Texto}}</td>
+            <td>{{.Autor}}</td>
+
+            </tr>
+            {{else}}
+             <tr>
+                <td colspan="4" class="text-center text-muted">Nenhum registro encontrado na tabela servidorcliente.</td>
+             </tr>
+             {{end}}
+        </tbody>
+
+    </table>
+
+    <br><br>
+
+    <h2>Registros recebido do cliente table servidorcliente</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titulo</th>
+                <th>Texto</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {{range .RegistroCliente}}
+            <tr>
+
+            <td>{{.ID}}</td>
+            <td>{{.Titulo}}</td>
+            <td>{{.Texto}}</td>
+            <td>{{.Autor}}</td>
+
+            </tr>
+            {{else}}
+             <tr>
+                <td colspan="4" class="text-center text-muted">Nenhum registro encontrado na tabela servidorcliente.</td>
+             </tr>
+             {{end}}
+        </tbody>
+
+    </table>
+
+</body>
+</html>
+
+
