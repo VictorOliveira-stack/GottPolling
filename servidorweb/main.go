@@ -19,31 +19,31 @@ func DbSqlite() {
 
 	dbDir := "./db"
 	if err := os.MkdirAll(dbDir, 0755); err != nil {
-		panic("Erro ao criar diretório db: " + err.Error())
+		panic("Error creating database directory: " + err.Error())
 	}
 
 	var err error
-	dbPath := filepath.Join(dbDir, "servidorweb.db")
+	dbPath := filepath.Join(dbDir, "webserver.db")
 	db, err = sql.Open("sqlite", dbPath+"?_timeout=5000")
 	if err != nil {
-		panic("Erro ao abrir banco: " + err.Error())
+		panic("Error opening database: " + err.Error())
 	}
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS webservidor(
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS webserver(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		titulo TEXT,
-		texto TEXT,
-		autor TEXT
+		tittle TEXT,
+		text TEXT,
+		author TEXT
 	);
 	
-	CREATE TABLE IF NOT EXISTS servidorcliente(
+	CREATE TABLE IF NOT EXISTS serverclient(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		titulo TEXT,
-		texto TEXT,
-		autor TEXT
+		tittle TEXT,
+		text TEXT,
+		author TEXT
 	);`)
 	if err != nil {
-		panic("Erro ao criar tabela: " + err.Error())
+		panic("Error creating table: " + err.Error())
 	}
 
 }
@@ -51,25 +51,25 @@ func DbSqlite() {
 func InsertDb(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 
 	/*titulo := "inserindo no sqlite online"
 	texto := "ola mundo estamos online"
 	autor := "inserido online"*/
 
-	titulo := r.FormValue("titulo")
-	texto := r.FormValue("texto")
-	autor := r.FormValue("autor")
+	tittle := r.FormValue("tittle")
+	text := r.FormValue("text")
+	author := r.FormValue("author")
 
-	if titulo == "" || texto == "" || autor == "" {
-		http.Error(w, "Todos os campos são obrigatórios", http.StatusBadRequest)
+	if tittle == "" || text == "" || author == "" {
+		http.Error(w, "All fields are required.", http.StatusBadRequest)
 		return
 	}
 
-	query := `INSERT INTO webservidor (titulo, texto, autor) VALUES (?,?,?)`
+	query := `INSERT INTO webserver (tittle, text, author) VALUES (?,?,?)`
 
-	_, err := db.Exec(query, titulo, texto, autor)
+	_, err := db.Exec(query, tittle, text, author)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -78,249 +78,239 @@ func InsertDb(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//enviar para o cliente
-//do servidor para o cliente
+//sent to client
+//from the server to the client //server is here
 
-func EnviarParaClienteLocal(w http.ResponseWriter, r *http.Request) {
+func SentToLocalClient(w http.ResponseWriter, r *http.Request) {
 
-	type EnviarAoCliente struct {
+	type SentToClient struct {
 		ID     int    `json:"id"`
-		Titulo string `json:"titulo"`
-		Texto  string `json:"texto"`
-		Autor  string `json:"autor"`
+		Tittle string `json:"tittle"`
+		Text   string `json:"text"`
+		Author string `json:"author"`
 	}
 
-	rows, err := db.Query(`SELECT id, titulo, texto, autor FROM webservidor`)
+	rows, err := db.Query(`SELECT id, tittle, text, author FROM webserver`)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	var registros []EnviarAoCliente
+	var records []SentToClient
 
 	for rows.Next() {
 
-		var registro EnviarAoCliente
+		var record SentToClient
 
 		err := rows.Scan(
-			&registro.ID,
-			&registro.Titulo,
-			&registro.Texto,
-			&registro.Autor,
+			&record.ID,
+			&record.Tittle,
+			&record.Text,
+			&record.Author,
 		)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		registros = append(registros, registro)
+		records = append(records, record)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(registros)
+	json.NewEncoder(w).Encode(records)
 
 }
 
-// do cliente para o servidor
-func ReceberDoClienteNoServidorWeb(w http.ResponseWriter, r *http.Request) {
-
-	/*ticker := time.NewTicker(5 * time.Second) // Tenta a cada 5 segundos
-	defer ticker.Stop()*/
+// recieving from the client
+// from the client to the server // server is here
+func RecievingFromLocalClient(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido (use POST)", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed (use POST)", http.StatusMethodNotAllowed)
 		return
 	}
 
-	type DadosRecebido struct {
+	type DataRecivied struct {
 		ID     int    `json:"id"`
-		Titulo string `json:"titulo"`
-		Texto  string `json:"texto"`
-		Autor  string `json:"autor"`
+		Tittle string `json:"tittle"`
+		Text   string `json:"text"`
+		Author string `json:"author"`
 	}
 
-	var registros []DadosRecebido
+	var records []DataRecivied
 
-	err := json.NewDecoder(r.Body).Decode(&registros)
+	err := json.NewDecoder(r.Body).Decode(&records)
 	if err != nil {
-		http.Error(w, "Erro ao decodificar JSON: "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error decoding JSON: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	for _, r := range registros {
+	for _, r := range records {
 		_, err := db.Exec(`
-			INSERT INTO webservidor
-			(id, titulo, texto, autor)
+			INSERT INTO webserver
+			(id, tittle, text, author)
 			VALUES (?, ?, ?, ?)
 			ON CONFLICT(id) DO UPDATE SET titulo=excluded.titulo,
 			texto=excluded.texto, autor=excluded.autor
 			`,
 			r.ID,
-			r.Titulo,
-			r.Texto,
-			r.Autor,
+			r.Tittle,
+			r.Text,
+			r.Author,
 		)
 
 		if err != nil {
-			log.Println("[Servidor] Erro ao salvar registro no banco:", err)
-			http.Error(w, "Erro ao salvar no banco local", http.StatusInternalServerError)
+			log.Println("[Server] Error saving record to database: ", err)
+			http.Error(w, "Error saving to local database: ", http.StatusInternalServerError)
 			return
 		}
 
 	}
 
-	//Responder ao cliente indicando sucesso
+	// Client response started successfully.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
-		"status":  "sucesso",
-		"message": "Dados sicronizados no servidor com sucesso!",
+		"status":  "success",
+		"message": "Data synchronized with the server successfully! ",
 	})
 
 }
 
-// recebendo do cliente
-//do cliente para o servidor
+// Just to render the database table in the application and check if communication is working properly.
+//from the client to the server // server is here
 
-//INSERT INTO servidorcliente //vou manter pra poder manter a vizualização no servidor//EnviarParaServidor()
-//aqui só ta vindo para servidorcliente no render mas vindo de webservidor no cliente não escrevendo mais no servidorcliente local
-
-func Receberdocliente(w http.ResponseWriter, r *http.Request) {
-
-	/*ticker := time.NewTicker(5 * time.Second) // Tenta a cada 5 segundos
-	defer ticker.Stop()*/
+func RenderOnServer(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido (use POST)", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not allowed (use POST)", http.StatusMethodNotAllowed)
 		return
 	}
 
-	type DadosRecebido struct {
+	type DataRecivied struct {
 		ID     int    `json:"id"`
-		Titulo string `json:"titulo"`
-		Texto  string `json:"texto"`
-		Autor  string `json:"autor"`
+		Tittle string `json:"tittle"`
+		Text   string `json:"text"`
+		Author string `json:"author"`
 	}
 
-	var registros []DadosRecebido
+	var records []DataRecivied
 
-	err := json.NewDecoder(r.Body).Decode(&registros)
+	err := json.NewDecoder(r.Body).Decode(&records)
 	if err != nil {
 		http.Error(w, "Erro ao decodificar JSON: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	for _, r := range registros {
+	for _, r := range records {
 		_, err := db.Exec(`
-			INSERT INTO servidorcliente
-			(id, titulo, texto, autor)
+			INSERT INTO serverclient
+			(id, tittle, text, author)
 			VALUES (?, ?, ?, ?)
 			ON CONFLICT(id) DO UPDATE SET titulo=excluded.titulo,
 			texto=excluded.texto, autor=excluded.autor
 			`,
 			r.ID,
-			r.Titulo,
-			r.Texto,
-			r.Autor,
+			r.Tittle,
+			r.Text,
+			r.Author,
 		)
 
 		if err != nil {
-			log.Println("[Servidor] Erro ao salvar registro no banco:", err)
-			http.Error(w, "Erro ao salvar no banco local", http.StatusInternalServerError)
+			log.Println("[Server] Error saving record to database:", err)
+			http.Error(w, "Error saving to local database:", http.StatusInternalServerError)
 			return
 		}
 
 	}
 
-	//Responder ao cliente indicando sucesso
+	// Answer to client started successfully.
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
-		"status":  "sucesso",
-		"message": "Dados sicronizados no servidor com sucesso!",
+		"status":  "success",
+		"message": "Data synchronized with the server successfully!",
 	})
 
 }
 
+// serving html
 func Indexhtml(w http.ResponseWriter, r *http.Request) {
 
-	type RegistroCliente struct {
+	type ClientRecord struct {
 		ID     int
-		Titulo string
-		Texto  string
-		Autor  string
+		Tittle string
+		Text   string
+		Author string
 	}
 
-	type RegistroServidorweb struct {
+	type RecordsServerWeb struct {
 		ID     int
-		Titulo string
-		Texto  string
-		Autor  string
+		Tittle string
+		Text   string
+		Author string
 	}
 
-	type PaginaData struct {
-		RegistroCliente     []RegistroCliente
-		RegistroServidorweb []RegistroServidorweb
+	type PagData struct {
+		ClientRecord     []ClientRecord
+		RecordsServerWeb []RecordsServerWeb
 	}
 
-	rows, err := db.Query(`SELECT id, titulo, texto, autor FROM servidorcliente ORDER BY id DESC`)
+	rows, err := db.Query(`SELECT id, tittle, text, author FROM servidorcliente ORDER BY id DESC`)
 	if err != nil {
-		http.Error(w, "Erro ao buscar dados do banco: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error fetching data from database: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	var listaRegistros []RegistroCliente
+	var recordList []ClientRecord
 
 	for rows.Next() {
-		var reg RegistroCliente
-		err := rows.Scan(&reg.ID, &reg.Titulo, &reg.Texto, &reg.Autor)
+		var rec ClientRecord
+		err := rows.Scan(&rec.ID, &rec.Tittle, &rec.Text, &rec.Author)
 		if err != nil {
-			http.Error(w, "Erro ao ler registros: "+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Error reading records: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		listaRegistros = append(listaRegistros, reg)
+		recordList = append(recordList, rec)
 	}
 
-	rows2, err := db.Query(`SELECT id, titulo, texto, autor FROM webservidor ORDER BY id DESC`)
+	rows2, err := db.Query(`SELECT id, tittle, text, author FROM webserver ORDER BY id DESC`)
 	if err != nil {
-		http.Error(w, "Erro ao buscar dados do banco: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error fetching data from database: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer rows2.Close()
 
-	var listaRegistros2 []RegistroServidorweb
+	var recordList2 []RecordsServerWeb
 
 	for rows2.Next() {
-		var reg2 RegistroServidorweb
-		err := rows2.Scan(&reg2.ID, &reg2.Titulo, &reg2.Texto, &reg2.Autor)
+		var rec2 RecordsServerWeb
+		err := rows2.Scan(&rec2.ID, &rec2.Tittle, &rec2.Text, &rec2.Author)
 		if err != nil {
-			http.Error(w, "Erro ao ler registros: "+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Error reading records: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		listaRegistros2 = append(listaRegistros2, reg2)
+		recordList2 = append(recordList2, rec2)
 	}
 
-	dadosDaPagina := PaginaData{
-		RegistroCliente:     listaRegistros,
-		RegistroServidorweb: listaRegistros2,
+	dataOfPag := PagData{
+		ClientRecord:     recordList,
+		RecordsServerWeb: recordList2,
 	}
 
 	tmpl, err := template.ParseFiles("index.html")
 	if err != nil {
-		http.Error(w, "Erro ao carregar template"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error loading template:"+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//err = tmpl.Execute(w, nil)
-	//fmt.Println("err", err)
-	//tmpl.Execute(w, nil)
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	//err = tmpl.Execute(w, listaRegistros)
-	err = tmpl.Execute(w, dadosDaPagina)
+	err = tmpl.Execute(w, dataOfPag)
 	if err != nil {
-		http.Error(w, "Erro ao renderizar HTML: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error rendering HTML: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -332,39 +322,28 @@ func main() {
 
 	DbSqlite()
 
-	//rotas de direcionamento
+	// Backend navigation routes
 	http.HandleFunc("/", Indexhtml)
 
-	//rotas de direcionamento
+	// Backend navigation routes
 
-	//rotas com form
+	//routes with form
 	http.HandleFunc("/postar", InsertDb) //postar pelo form post
 
-	//rotas com form
+	//routes with form
 
 	fs := http.FileServer(http.Dir("/static/"))
 	http.Handle("/static/", http.StripPrefix("static/", fs))
 
-	//rotas de comunicaçao externa
-	http.HandleFunc("/receberdocliente", EnviarParaClienteLocal)
-	http.HandleFunc("/enviarparaservidor", Receberdocliente)
-	http.HandleFunc("/receberdoclienteservidorweb", ReceberDoClienteNoServidorWeb)
+	// External communication routes
 
-	//rotas de comunicaçao externa
+	http.HandleFunc("/senttolocalclient", SentToLocalClient)
+	http.HandleFunc("/recievingfromlocalclient", RecievingFromLocalClient)
+	http.HandleFunc("/renderonserver", RenderOnServer)
 
-	//go IniciarPollingCliente()
+	// External communication routes
 
-	log.Printf("Servidor rodando na porta %s...", port)
+	log.Printf("Server running on port %s...", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 
-	/*fmt.Println("Servidor rodando em :8080")
-	fmt.Println("acesse: http:localhost:8080")
-
-	if err := http.ListenAndServe(":8080", nil); //aqui é o servidor
-	err != nil {
-		panic(err)
-	}*/
-
 }
-
-//estava construindo a struct para enviar para o cliente, sai para criar o cliente

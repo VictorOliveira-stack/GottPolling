@@ -6,48 +6,48 @@
     <title>Servidor 1</title>
 </head>
 <body>
-    <h1>Olá webserver</h1>
+    <h1>Hello webserver</h1>
 
     <form action="/postar" method="post" style="display: flex; flex-direction: column; width: 20em;">
 
-        <span>Titulo</span>
-        <input type="text" name="titulo" id="titulo" placeholder="insira o titulo" required>
-        <span>Sua Postagem</span>
-        <textarea name="texto" id="texto" placeholder="insira sua postagem" cols="30" rows="10"></textarea>
-        <span>Nome do Autor</span>
-        <input type="text" name="autor" id="autor" placeholder="nome do autor" required>
+        <span>Tittle</span>
+        <input type="text" name="tittle" id="tittle" placeholder="tittle" required>
+        <span>Your Post</span>
+        <textarea name="text" id="text" placeholder="your post" cols="30" rows="10"></textarea>
+        <span>Author Name</span>
+        <input type="text" name="author" id="author" placeholder="author name" required>
 
-        <button type="submit">Postar</button>
+        <button type="submit">Post</button>
 
     </form>
 
 
-    <h2>Registros do servidorweb  </h2>
+    <h2>Records Serverweb  </h2>
 
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Titulo</th>
-                <th>Texto</th>
-                <th>Autor</th>
+                <th>Tittle</th>
+                <th>Text</th>
+                <th>Author</th>
             </tr>
         </thead>
 
         <tbody>
 
-            {{range .RegistroServidorweb}}
+            {{range .RecordsServerWeb}}
             <tr>
 
             <td>{{.ID}}</td>
-            <td>{{.Titulo}}</td>
-            <td>{{.Texto}}</td>
-            <td>{{.Autor}}</td>
+            <td>{{.Tittle}}</td>
+            <td>{{.Text}}</td>
+            <td>{{.Author}}</td>
 
             </tr>
             {{else}}
              <tr>
-                <td colspan="4" class="text-center text-muted">Nenhum registro encontrado na tabela servidorcliente.</td>
+                <td colspan="4" class="text-center text-muted">No records found in the servidorcliente table.</td>
              </tr>
              {{end}}
         </tbody>
@@ -56,32 +56,32 @@
 
     <br><br>
 
-    <h2>Registros recebido do cliente table servidorcliente</h2>
+    <h2>Records received from the client</h2>
 
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Titulo</th>
-                <th>Texto</th>
-                <th>Autor</th>
+                <th>Tittle</th>
+                <th>Text</th>
+                <th>Author</th>
             </tr>
         </thead>
 
         <tbody>
 
-            {{range .RegistroCliente}}
+            {{range .ClientRecord}}
             <tr>
 
             <td>{{.ID}}</td>
-            <td>{{.Titulo}}</td>
-            <td>{{.Texto}}</td>
-            <td>{{.Autor}}</td>
+            <td>{{.Tittle}}</td>
+            <td>{{.Text}}</td>
+            <td>{{.Author}}</td>
 
             </tr>
             {{else}}
              <tr>
-                <td colspan="4" class="text-center text-muted">Nenhum registro encontrado na tabela servidorcliente.</td>
+                <td colspan="4" class="text-center text-muted">No records found in the servidorcliente table.</td>
              </tr>
              {{end}}
         </tbody>
