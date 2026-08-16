@@ -24,7 +24,7 @@ atravéz do SQLite.
   Nessa abordagem há dois bancos de dados sicronizando entre si, um em uma VPS e outro localmente, havendo
 a exclusão de qualquer um ambos se restauram pois contém os mesmos dados e se comunicam entre si, por usar
 a abordagem de offline-first.
-## existe a nescessidade de um servidor local rodando porém com engenhosidade pode se encontrar algumas soluções interessantes que permitam desligar o servidor local, pois é essa uma das propostas do esquema apresentado.
+** existe a nescessidade de um servidor local rodando porém com engenhosidade pode se encontrar algumas soluções interessantes que permitam desligar o servidor local, pois é essa uma das propostas do esquema apresentado.**
 Não me deterei em falar sobre essas soluções.
 
 # Tecnologias
