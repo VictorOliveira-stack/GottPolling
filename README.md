@@ -1,7 +1,7 @@
 # GottPolling
 
-* [Objetivo](#-o-objetivo-do-projeto)
-* [Tecnologias](#-tecnologias)
+* [Objetivo](#objetivo)
+* [Tecnologias](#tecnologias)
 
 # sync/offline-first
 
@@ -10,6 +10,7 @@ a um servidor local sem precisar lhe dá com a camada de rede NAT, permitindo
 a comunicação sem aberturas de portas no roteador, mas sim atravéz de polling,
 sendo esse metodo adotado em vez de websocket.
 
+## Objetivo
 ## O objetivo do projeto é não precisar pagar um banco de dados...
   Buscando uma solução para poder conectar dois servidores sendo um local e outro em uma VPS
 de baixo custo ou grátis, o GottPolling propõe um solução para manter renderizando na aplicação
