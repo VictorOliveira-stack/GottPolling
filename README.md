@@ -396,3 +396,105 @@ No **servidor web** você copia o conteúdo de:
 No **servidor local** irá copia o conteúdo de:
 	**SentToLocalClient** e **RecievingFromLocalClient** que estará escrito no lado do servidor local.
 * **os nomes das funções ficam iguais para melhor encontrar o seu pá**
+
+* para vizualizar online se está funcionando use essas duas funções:
+
+* **Servidor Web** crie essa função:
+
+
+func RenderOnServer(w http.ResponseWriter, r *http.Request) {
+
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed (use POST)", http.StatusMethodNotAllowed)
+		return
+	}
+
+	type DataRecivied struct {
+		ID     int    `json:"id"`
+		Tittle string `json:"tittle"`
+		Text   string `json:"text"`
+		Author string `json:"author"`
+	}
+
+	var records []DataRecivied
+
+	err := json.NewDecoder(r.Body).Decode(&records)
+	if err != nil {
+		http.Error(w, "Erro ao decodificar JSON: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	for _, r := range records {
+		_, err := db.Exec(`
+			INSERT INTO serverclient
+			(id, tittle, text, author)
+			VALUES (?, ?, ?, ?)
+			ON CONFLICT(id) DO UPDATE SET titulo=excluded.titulo,
+			texto=excluded.texto, autor=excluded.autor
+			`,
+			r.ID,
+			r.Tittle,
+			r.Text,
+			r.Author,
+		)
+
+		if err != nil {
+			log.Println("[Server] Error saving record to database:", err)
+			http.Error(w, "Error saving to local database:", http.StatusInternalServerError)
+			return
+		}
+
+	}
+
+	// Answer to client started successfully.
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{
+		"status":  "success",
+		"message": "Data synchronized with the server successfully!",
+	})
+
+}
+
+* **Servidor Local** crie essa função:
+
+func RenderOnServer() {
+  
+	ticker := time.NewTicker(10 * time.Second)
+	defer ticker.Stop()
+
+	type SentToClient struct {
+		ID     int    `json:"id"`
+		Tittle string `json:"tittle"`
+		Text   string `json:"text"`
+		Author string `json:"author"`
+	}
+
+	for range ticker.C {
+		// 1. Busca dados de 'servidorcliente' no banco local
+		rows, err := db.Query(`SELECT id, tittle, text, author FROM webserver`)
+		if err != nil {
+			continue
+		}
+
+		var records []SentToClient
+		for rows.Next() {
+			var r SentToClient
+			rows.Scan(&r.ID, &r.Tittle, &r.Text, &r.Author)
+			records = append(records, r)
+		}
+		rows.Close()
+
+		if len(records) == 0 {
+			continue
+		}
+
+		// 2. Transforma em JSON e envia via POST para o Render
+		jsonData, _ := json.Marshal(records)
+		resp, err := http.Post("https://yourDomainOrLocalhost/renderonserver", "application/json", bytes.NewBuffer(jsonData))
+		if err == nil {
+			resp.Body.Close()
+		}
+	}
+}
