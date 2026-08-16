@@ -40,7 +40,7 @@ Antes de ser modificado para ser uma biblioteca deve se usar o GottPolling assim
 
 * **Servidor Web**
 
-import (
+_import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
