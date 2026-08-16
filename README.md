@@ -1,7 +1,9 @@
 # GottPolling
+* https://github.com/VictorOliveira-stack/GottPolling
 
 * [Objetivo](#objetivo)
 * [Tecnologias](#tecnologias)
+* [Utilizando](#Utilizando)
 
 # sync/offline-first
 
@@ -498,3 +500,6 @@ func RenderOnServer() {
 		}
 	}
 }
+
+**Para melhor entendimento podes consultar o codigo no repositorio**
+
