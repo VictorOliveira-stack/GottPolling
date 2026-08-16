@@ -1,6 +1,6 @@
 # GottPolling
 
-*[Objetivo](#-O-objetivo)
+*[Objetivo](#-o-objetivo-do-projeto)
 
 # sync/offline-first
 
