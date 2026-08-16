@@ -1,6 +1,6 @@
-#GottPolling
+# GottPolling
 
-###https://github.com/VictorOliveira-stack/GottPolling
+### https://github.com/VictorOliveira-stack/GottPolling
 
 * [Objective](#objective)
   
@@ -9,16 +9,16 @@
 * [Usage](#Usage)
   
 
-##sync/offline-first
+## sync/offline-first
 
 GottPolling was developed with the intention of connecting an online server
 to a local server without having to deal with the NAT network layer, allowing
 communication without opening ports on the router, but rather through polling,
 with this method being adopted instead of WebSocket.
 
-##Objective
+## Objective
 
-###The goal of the project is to avoid having to pay for a database...
+### The goal of the project is to avoid having to pay for a database...
 
 Looking for a solution to connect two servers, one local and the other on a VPS
 at low cost or free, GottPolling proposes a solution to keep the application rendering
@@ -35,13 +35,13 @@ the offline-first approach.
 
 ###There is a need to have a local server running; however, with some ingenuity, interesting solutions can be found that allow the local server to be turned off, since this is one of the proposals of the presented approach.
 
-##Technologies
+## Technologies
 
 **Golang:**
 
 **SQLite:**
 
-##Usage
+## Usage
 
 Before being modified into a library, GottPolling should be used as follows:
 
