@@ -40,7 +40,8 @@ Antes de ser modificado para ser uma biblioteca deve se usar o GottPolling assim
 
 * **Servidor Web**
 
-_import (
+
+import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -52,6 +53,8 @@ _import (
 
 	_ "modernc.org/sqlite"
 ) 
+
+
 
 * **Servidor Local**
 import (
