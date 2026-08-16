@@ -45,7 +45,7 @@ the offline-first approach.
 
 Before being modified into a library, GottPolling should be used as follows:
 
-Importando dependencias padrões do Golang
+Importing standard Golang dependencies.
 
 **Web Server**
 
