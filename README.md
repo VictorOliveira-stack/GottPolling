@@ -505,5 +505,5 @@ func RenderOnServer() {
 	}
 }
 
-**Para melhor entendimento, pode consultar o código no repositorio, haverá maior detalhes lá**
+**Para melhor entendimento, poderá consultar o código no repositorio, haverá maiores detalhes**
 
