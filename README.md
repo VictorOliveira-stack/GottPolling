@@ -7,26 +7,28 @@
 
 # sync/offline-first
 
-  O GottPolling foi desenvolvido na intenção de conectar um servidor online
-a um servidor local sem precisar lhe dá com a camada de rede NAT, permitindo
-a comunicação sem aberturas de portas no roteador, mas sim atravéz de polling,
-sendo esse metodo adotado em vez de websocket.
+  O GottPolling foi desenvolvido com a intenção de conectar um servidor online
+a um servidor local sem precisar lidar com a camada de rede NAT, permitindo
+a comunicação sem aberturas de portas no roteador, mas sim através de polling,
+sendo esse método adotado em vez de WebSocket.
 
 # Objetivo
-## O objetivo do projeto é não precisar pagar um banco de dados...
-  Buscando uma solução para poder conectar dois servidores sendo um local e outro em uma VPS
-de baixo custo ou grátis, o GottPolling propõe um solução para manter renderizando na aplicação
-em uma VPS grátis os dados efemeros de um banco de dados SQLite, que podem ser apagados após um
+### O objetivo do projeto é não precisar pagar um banco de dados...
+
+Buscando uma solução para poder conectar dois servidores sendo um local e outro em uma VPS
+de baixo custo ou grátis, o GottPolling propõe uma solução para manter renderizando na aplicação
+em uma VPS grátis os dados efêmeros de um banco de dados SQLite, que podem ser apagados após um
 novo deploy ou tempo de inatividade que leva a instância a hibernar e apaga arquivos como databases
 em SQLite ou Json do fileSystem. Como falado acima a intenção é não precisar pagar um banco de dados
-caro logo de inicio (obviamente observando a nescessidade de cada projeto), permitindo escalar um pouco
-mais ou até o nivel que a empresa preferir, notoriamente o SQLite na maquina local não é a única opção,
-porém nessa camada de proposta inicial a idéia é poder renderizar os dados de forma leve na internet,
-atravéz do SQLite.
-  Nessa abordagem há dois bancos de dados sicronizando entre si, um em uma VPS e outro localmente, havendo
-a exclusão de qualquer um ambos se restauram pois contém os mesmos dados e se comunicam entre si, por usar
+caro logo de início (obviamente observando a necessidade de cada projeto), permitindo escalar um pouco
+mais ou até o nível que a empresa preferir, notoriamente o SQLite na maquina local não é a única opção,
+porém nessa camada de proposta inicial a ideia é poder renderizar os dados de forma leve na internet,
+através do SQLite.
+Nessa abordagem há dois bancos de dados sincronizando entre si, um em uma VPS e outro localmente, havendo
+a exclusão de qualquer um, ambos se restauram pois contêm os mesmos dados e se comunicam entre si, por usar
 a abordagem de offline-first.
-### existe a nescessidade de um servidor local rodando porém com engenhosidade pode se encontrar algumas soluções interessantes que permitam desligar o servidor local, pois é essa uma das propostas do esquema apresentado.
+
+### Existe a necessidade de um servidor local rodando porém, com engenhosidade pode se encontrar algumas soluções interessantes que permitam desligar o servidor local, pois é essa uma das propostas do esquema apresentado.
 
 # Tecnologias
 
@@ -35,9 +37,9 @@ a abordagem de offline-first.
 
 ## Utilizando
 
-Antes de ser modificado para ser uma biblioteca deve se usar o GottPolling assim:
+Antes de ser modificado para ser uma biblioteca deve-se usar o GottPolling assim:
 
-* **Importando** dependencias padrões do Golang
+* **Importando** dependências padrões do Golang
 
 * **Servidor Web**
 
@@ -390,15 +392,16 @@ func RecievingFromLocalClient() {
 }
 
 * **Note que:**
-note que são quatro funções que conversam entre si, poderiam ser duas, mas foi escolhido dividir para melhor vizualição.
+Note que são quatro funções que conversam entre si, poderiam ser duas, mas foi escolhido dividir para melhor visualização.
 **você** pode copiar essas funções para outras comunicações que precisem de polling.
 No **servidor web** você copia o conteúdo de:
-   **SentToLocalClient** e **RecievingFromLocalClient** que estará no lado do codigo do servidor web.
+   **SentToLocalClient** e **RecievingFromLocalClient**  que estará no lado do código do servidor web.
 No **servidor local** irá copia o conteúdo de:
 	**SentToLocalClient** e **RecievingFromLocalClient** que estará escrito no lado do servidor local.
-* **os nomes das funções ficam iguais para melhor encontrar o seu pá**
+  
+* **os nomes das funções ficam iguais para melhor encontrar o seu par**
 
-* para vizualizar online se está funcionando use essas duas funções:
+* para visualizar online se está funcionando use estas duas funções:
 
 * **Servidor Web** crie essa função:
 
@@ -500,5 +503,5 @@ func RenderOnServer() {
 	}
 }
 
-**Para melhor entendimento podes consultar o codigo no repositorio**
+**Para melhor entendimento, pode consultar o código no repositorio, haverá maior detalhes lá**
 
