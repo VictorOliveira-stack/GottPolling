@@ -390,5 +390,9 @@ func RecievingFromLocalClient() {
 
 * **Note que:**
 note que são quatro funções que conversam entre si, poderiam ser duas, mas foi escolhido dividir para melhor vizualição.
-**você** pode copiar essas funções para outras comunicações que precisem de polling. No servidor você copia o conteúdo de:
-   **SentToLocalClient** e **RecievingFromLocalClient**
+**você** pode copiar essas funções para outras comunicações que precisem de polling.
+No **servidor web** você copia o conteúdo de:
+   **SentToLocalClient** e **RecievingFromLocalClient** que estará no lado do codigo do servidor web.
+No **servidor local** irá copia o conteúdo de:
+	**SentToLocalClient** e **RecievingFromLocalClient** que estará escrito no lado do servidor local.
+* **os nomes das funções ficam iguais para melhor encontrar o seu pá**
