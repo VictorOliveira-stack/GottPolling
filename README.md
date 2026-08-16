@@ -91,6 +91,63 @@ import (
 )
   
 
-* **Servidor Web** crie o main com essas rotas:
+* **Servidor Web** crie o main com essas rotas e funções:
+
+func main() {
+
+	port := os.Getenv("PORT")
+
+	DbSqlite()
+
+	// Backend navigation routes
+	http.HandleFunc("/", Indexhtml)
+
+	// Backend navigation routes
+
+	//routes with form
+	http.HandleFunc("/postar", InsertDb) //postar pelo form post
+
+	//routes with form
+
+	fs := http.FileServer(http.Dir("/static/"))
+	http.Handle("/static/", http.StripPrefix("static/", fs))
+
+	// External communication routes
+
+	http.HandleFunc("/senttolocalclient", SentToLocalClient)
+	http.HandleFunc("/recievingfromlocalclient", RecievingFromLocalClient)
+	http.HandleFunc("/renderonserver", RenderOnServer)
+
+	// External communication routes
+
+	log.Printf("Server running on port %s...", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
+
+}
 
 
+* **Servidor Local** crie o main com essas rotas e funções:
+
+func main() {
+
+	DbSqlite()
+
+	fs := http.FileServer(http.Dir("./static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	http.HandleFunc("/", HtmlClient)
+
+	// Start polling in the background
+	//polling endpoint
+	go SentToLocalClient()
+	go RecievingFromLocalClient()
+	go RenderOnServer()
+	//polling endpoint
+
+	fmt.Println("Server running on port :9090")
+	fmt.Println("access: http://localhost:9090")
+	if err := http.ListenAndServe(":9090", nil); err != nil {
+		panic(err)
+	}
+
+}
