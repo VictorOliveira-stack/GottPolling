@@ -323,8 +323,13 @@ func SentToLocalClient() {
 }
 
 // sent to server
-// from the client to the server // client is here
+
+// from the client to the server
+// client is here
+
+
 func RecievingFromLocalClient() {
+
 	ticker := time.NewTicker(10 * time.Second)
 	defer ticker.Stop()
 
