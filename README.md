@@ -158,7 +158,9 @@ func main() {
 * **Servidor Web** crie essas funções de polling:
 
 //sent to client
+
 //from the server to the client //server is here
+
 
 func SentToLocalClient(w http.ResponseWriter, r *http.Request) {
 
@@ -202,9 +204,14 @@ func SentToLocalClient(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
 // recieving from the client
-// from the client to the server // server is here
+
+// from the client to the server
+// server is here
+
 func RecievingFromLocalClient(w http.ResponseWriter, r *http.Request) {
+
 
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed (use POST)", http.StatusMethodNotAllowed)
@@ -262,7 +269,10 @@ func RecievingFromLocalClient(w http.ResponseWriter, r *http.Request) {
 * **Servidor Local** crie essas funções de polling:
 
   // recieving from server
+  
 // from the server to the client //client is here
+
+
 func SentToLocalClient() {
 
 	ticker := time.NewTicker(5 * time.Second)
