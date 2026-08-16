@@ -43,13 +43,21 @@ Antes de ser modificado para ser uma biblioteca deve se usar o GottPolling assim
 
 import (
 	"database/sql"
+	
 	"encoding/json"
+	
 	"fmt"
+	
 	"html/template"
+	
 	"log"
+	
 	"net/http"
+	
 	"os"
+	
 	"path/filepath"
+	
 
 	_ "modernc.org/sqlite"
 ) 
