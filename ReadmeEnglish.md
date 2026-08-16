@@ -33,7 +33,7 @@ In this approach, there are two databases synchronizing with each other, one on 
 either one is deleted, both can restore themselves because they contain the same data and communicate with each other, by using
 the offline-first approach.
 
-### There is a need to have a local server running; however, with some ingenuity, interesting solutions can be found that allow the web server to be turned off, since this is one of the proposals of the presented approach.
+### There is a need to have a local server running; however, with some ingenuity, interesting solutions can be found that allow the local server to be turned off, since this is one of the proposals of the presented approach.
 
 ## Technologies
 
