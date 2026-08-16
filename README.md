@@ -1,7 +1,7 @@
 # GottPolling
 
-*[Objetivo](#-o-objetivo-do-projeto)
-*[Tecnologias](#-tecnologias)
+* [Objetivo](#-o-objetivo-do-projeto)
+* [Tecnologias](#-tecnologias)
 
 # sync/offline-first
 
