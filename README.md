@@ -37,6 +37,36 @@ Não me deterei em falar sobre essas soluções.
 Antes de ser modificado para ser uma biblioteca deve se usar o GottPolling assim:
 
 * **Importando** dependencias padrões do Golang
+
+* **Servidor Web**
+
+import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+
+	_ "modernc.org/sqlite"
+) 
+
+* **Servidor Local**
+import (
+	"bytes"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"html/template"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
+
+	_ "modernc.org/sqlite"
+)
   
 
 
